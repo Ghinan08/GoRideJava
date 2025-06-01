@@ -1,6 +1,6 @@
 package Projek.GoRide;
 
-public class RideRequest {
+public class RideRequest implements RideAction{
     private long id;
     private String pickup;
     private String destination;
@@ -8,8 +8,6 @@ public class RideRequest {
     private String notes;
     private String status;
     private User user;
-
-    public RideRequest() {}
 
     public RideRequest(long id, String pickup, String destination) {
         this.id = id;
@@ -71,5 +69,15 @@ public class RideRequest {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public void startRide() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void endRide() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
