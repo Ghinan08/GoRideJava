@@ -7,8 +7,8 @@ public class Main
 
         HashMap<String, Person> personMap = new HashMap<String, Person>();
         
-        personMap.put("STU001", new User(1, "Darla", 8954227, "MiraTeslaNungkin@gmail.com "));
-        personMap.put("STU002", new Driver(2, "Rafi", 8113991 , "denikalkulus@gmail.com", "ER012D", "Motor", "Yamaha"));
+        personMap.put("STU001", new User(1, "Darla", 8954227, "anonymous@gmail.com "));
+        personMap.put("STU002", new Driver(2, "Rafi", 8113991 , "anonymous2@gmail.com", "ER012D", "Motor", "Yamaha"));
         
         for(String personId : personMap.keySet()) {
         	Person person = personMap.get(personId);
