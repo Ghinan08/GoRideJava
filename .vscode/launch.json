@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MainAlternative1",
+            "request": "launch",
+            "mainClass": "Projek.MainAlternative1",
+            "projectName": "GoRide"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Projek.GoRide.Main",

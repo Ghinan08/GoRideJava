@@ -2,10 +2,6 @@ package Projek.GoRide;
 
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
-
-// Asumsi: Anda memiliki kelas-kelas ini dengan constructor dan method yang sesuai.
-// import Projek.GoRide.Model.*; // Anda mungkin perlu menyesuaikan ini
 
 public class Main {
 
@@ -64,8 +60,8 @@ public class Main {
         drivers.put(102, new Driver(102, "Andi", 8224455, "andi@gmail.com", "AB123C", "Mobil", "Toyota"));
         
         // Initialize driver statuses
-        driverStatuses.put(101, new DriverStatus(101, true, "Jl. Sudirman"));
-        driverStatuses.put(102, new DriverStatus(102, false, "Jl. Thamrin"));
+        driverStatuses.put(101, new DriverStatus(101, true, "Bojoangsoang"));
+        driverStatuses.put(102, new DriverStatus(102, false, "Sukabirus"));
     }
     
     private static void userMenu() {
@@ -122,18 +118,20 @@ public class Main {
         String notes = scanner.nextLine();
         
         // Find available driver
-        Driver availableDriver = findAvailableDriver();
-        if (availableDriver == null) {
+        Integer availableDriverId = findAvailableDriverId();
+        if (availableDriverId == null) {
             System.out.println("Maaf, tidak ada driver yang tersedia saat ini.");
             return;
         }
+        
+        Driver availableDriver = drivers.get(availableDriverId);
         
         // Create route and calculate fare
         Route route = new Route(5.0, 15.0); // Sample distance and duration
         double fare = route.estimateFare();
         
         // Create order
-        Order order = new Order(orderIdCounter++, userId, availableDriver.getId(), "Menunggu Driver", fare);
+        Order order = new Order(orderIdCounter++, userId, availableDriverId, "Menunggu Driver", fare);
         orders.put(order.getId(), order);
         
         System.out.println("\nPesanan berhasil dibuat!");
@@ -142,16 +140,16 @@ public class Main {
         System.out.println("Perkiraan tarif: Rp" + fare);
         
         // Update driver status
-        driverStatuses.get(availableDriver.getId()).goOffline();
+        driverStatuses.get(availableDriverId).goOffline();
         
         // Simulate ride process
-        processRide(order.getId(), availableDriver.getId());
+        processRide(order.getId(), availableDriverId);
     }
     
-    private static Driver findAvailableDriver() {
+    private static Integer findAvailableDriverId() {
         for (DriverStatus status : driverStatuses.values()) {
             if (status.isAvailable()) {
-                return drivers.get(status.getDriverId());
+                return status.getDriverId();
             }
         }
         return null;
@@ -214,7 +212,7 @@ public class Main {
         
         try {
             int choice = Integer.parseInt(scanner.nextLine());
-            String method = "";
+            final String method;
             
             switch (choice) {
                 case 1:
@@ -251,10 +249,11 @@ public class Main {
             Payment payment = new Payment(paymentMethod.getPaymentId(), paymentMethod, "PAID");
             payment.makePayment(order.getFare());
             
-            // Generate invoice
-            Invoice invoice = new Invoice(order.getId(), Integer.parseInt(payment.getPaymentId().substring(4)), 
+            // Generate invoice - menggunakan paymentId yang sudah di-generate
+            int paymentId = (int) (System.currentTimeMillis() % 1000000);
+            Invoice invoice = new Invoice(order.getId(), paymentId, 
                                         "Pembayaran untuk order #" + order.getId(), 
-                                        Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(0, 8)));
+                                        (int) (System.currentTimeMillis() / 1000));
             System.out.println("Invoice telah dibuat: #" + invoice.getId());
         } catch (NumberFormatException e) {
             System.out.println("Input tidak valid!");
@@ -337,6 +336,7 @@ public class Main {
                     case 1:
                         toggleDriverStatus(driverId);
                         status = driverStatuses.get(driverId); // Refresh status
+                        System.out.println("Status Anda sekarang: " + (status.isAvailable() ? "Online" : "Offline"));
                         break;
                     case 2:
                         viewDriverOrders(driverId);
@@ -394,9 +394,8 @@ public class Main {
         String location = scanner.nextLine();
         
         DriverStatus status = driverStatuses.get(driverId);
-        // In a real app, we would update both location and coordinates
-        status = new DriverStatus(driverId, status.isAvailable(), location);
-        driverStatuses.put(driverId, status);
+        // Update location while preserving availability status
+        driverStatuses.put(driverId, new DriverStatus(driverId, status.isAvailable(), location));
         
         System.out.println("Lokasi berhasil diperbarui: " + location);
     }
