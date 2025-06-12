@@ -15,7 +15,7 @@ public class Order implements RideAction {
         this.fare = fare;
     }
 
-    public void complete() {
+    public void complete(int ratingValue) {
         this.status = "Completed";
     }
 

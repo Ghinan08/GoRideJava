@@ -2,7 +2,7 @@ package Projek.GoRide;
 
 public class User extends Person {
 
-    public User(int id, String name, int phone, String email) {
+    public User(int id, String name, long phone, String email) {
         super(id, name, phone, email);
     }
 

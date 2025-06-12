@@ -6,7 +6,7 @@ public class Driver extends Person {
     private String model;
     private String type;
 
-    public Driver(int id, String name, int phone, String email, String plateNumber, String model, String type) {
+    public Driver(int id, String name, long phone, String email, String plateNumber, String model, String type) {
         super(id, name, phone, email);
         this.plateNumber = plateNumber;
         this.model = model;
