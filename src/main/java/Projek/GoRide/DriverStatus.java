@@ -1,8 +1,6 @@
 package Projek.GoRide;
 
 public class DriverStatus {
-    public static final String AVAILABLE = null;
-	public static final String BOOKED = null;
     private int driverId;
     private boolean isAvailable;
     private String location;
@@ -19,6 +17,10 @@ public class DriverStatus {
 
     public void goOffline() {
         this.isAvailable = false;
+    }
+
+    public void updateLocation(String newLocation) {
+        this.location = newLocation;
     }
 
     public int getDriverId() {

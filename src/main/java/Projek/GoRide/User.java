@@ -1,33 +1,25 @@
 package Projek.GoRide;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User extends Person {
+    private List<Order> orderHistory = new ArrayList<>();
 
     public User(int id, String name, long phone, String email) {
         super(id, name, phone, email);
     }
 
-    public void requestId() {
-        System.out.println("User requesting ID...");
+    public void addOrderToHistory(Order order) {
+        orderHistory.add(order);
     }
 
-    public void viewRideHistory() {
-        System.out.println("Viewing ride history...");
-    }
-
-    public String getRide() {
-        return "Sample Ride";
+    public List<Order> getOrderHistory() {
+        return orderHistory;
     }
 
     @Override
     public String getRole() {
         return "User";
-    }
-
-    public void setId(Long userId) {
-        throw new UnsupportedOperationException("Unimplemented method 'setId'");
-    }
-
-    public void setName(String string) {
-        throw new UnsupportedOperationException("Unimplemented method 'setName'");
     }
 }

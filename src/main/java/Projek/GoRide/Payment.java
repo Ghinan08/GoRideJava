@@ -1,16 +1,15 @@
 package Projek.GoRide;
 
-public class Payment implements PaymentMethod{
+public class Payment implements PaymentMethod {
     private String paymentId;
-    private PaymentMethod payMethod;
     private String status;
 
-    public Payment(String paymentId, PaymentMethod payMethod, String status) {
+    public Payment(String paymentId) {
         this.paymentId = paymentId;
-        this.payMethod = payMethod;
-        this.status = status;
+        this.status = "PENDING";
     }
-   @Override
+
+    @Override
     public String getPaymentId() {
         return paymentId;
     }
@@ -22,16 +21,6 @@ public class Payment implements PaymentMethod{
 
     @Override
     public void makePayment(double amount) {
-        System.out.println("Melakukan pembayaran sebesar: Rp" + amount);
         this.status = "PAID";
     }
-
-    public void setPaymentMethod(PaymentMethod payMethod) {
-        this.payMethod = payMethod;
-    }
-
-    public PaymentMethod getPaymentMethod() {
-        return payMethod;
-    }
 }
-

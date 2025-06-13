@@ -6,25 +6,7 @@ public class Location {
     private String address;
 
     public Location(String address) {
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.address = address;
-    }
-
-    public String getCoordinates() {
-        return latitude + "," + longitude;
-    }
-
-    public void viewRideHistory() {
-
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
     }
 
     public String getAddress() {

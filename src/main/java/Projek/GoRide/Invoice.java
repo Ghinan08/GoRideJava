@@ -13,27 +13,7 @@ public class Invoice {
         this.date = date;
     }
 
-    public void generate() {
-
-    }
-
-    public void sendToUser() {
-
-    }
-
     public int getId() {
         return id;
-    }
-
-    public int getPaymentId() {
-        return paymentId;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public int getDate() {
-        return date;
     }
 }

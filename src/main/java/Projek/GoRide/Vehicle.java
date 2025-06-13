@@ -11,10 +11,6 @@ public class Vehicle {
         this.type = type;
     }
 
-    public void assignToDriver(int driverId) {
-    	
-    }
-
     public void updateInfo(String model, String type) {
         this.model = model;
         this.type = type;

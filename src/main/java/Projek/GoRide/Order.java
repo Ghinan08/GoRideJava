@@ -6,16 +6,18 @@ public class Order implements RideAction {
     private int driverId;
     private String status;
     private double fare;
+    private Route route;
 
-    public Order(int id, int userId, int driverId, String status, double fare) {
+    public Order(int id, int userId, int driverId, double fare, Route route) {
         this.id = id;
         this.userId = userId;
         this.driverId = driverId;
-        this.status = status;
+        this.status = "Menunggu Driver";
         this.fare = fare;
+        this.route = route;
     }
 
-    public void complete(int ratingValue) {
+    public void complete() {
         this.status = "Completed";
     }
 
@@ -51,5 +53,9 @@ public class Order implements RideAction {
 
     public double getFare() {
         return fare;
+    }
+
+    public Route getRoute() {
+        return route;
     }
 }
