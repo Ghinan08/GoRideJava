@@ -13,8 +13,8 @@ public abstract class Person {
         this.email = email;
     }
 
-    public String getId() {
-        return "id";
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -31,4 +31,3 @@ public abstract class Person {
 
     public abstract String getRole();
 }
-

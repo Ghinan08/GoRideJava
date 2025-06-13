@@ -1,6 +1,6 @@
 package Projek.GoRide;
 
-public class Route implements RideAction {
+public class Route {
     private double distance;
     private double duration;
 
@@ -10,21 +10,7 @@ public class Route implements RideAction {
     }
 
     public double estimateFare() {
-        return distance * 2000; 
-    }
-
-    public double calculateEta() {
-        return (distance / 40) * 60; 
-    }
-
-    @Override
-    public void startRide() {
-
-    }
-
-    @Override
-    public void endRide() {
-
+        return distance * 2000;
     }
 
     public double getDistance() {

@@ -1,6 +1,8 @@
 package Projek.GoRide;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -10,6 +12,7 @@ public class Main {
     private static HashMap<Integer, Order> orders = new HashMap<>();
     private static HashMap<Integer, DriverStatus> driverStatuses = new HashMap<>();
     private static Scanner scanner = new Scanner(System.in);
+    private static Random random = new Random();
     private static int orderIdCounter = 1;
 
     public static void main(String[] args) {
@@ -51,16 +54,16 @@ public class Main {
     }
     
     private static void initializeData() {
-        // Initialize some sample users
+        // Initialize users
         users.put(1, new User(1, "Darla", 8954227, "darla@gmail.com"));
         users.put(2, new User(2, "Budi", 8112233, "budi@gmail.com"));
         
-        // Initialize some sample drivers
+        // Initialize drivers
         drivers.put(101, new Driver(101, "Rafi", 8113991, "rafi@gmail.com", "ER012D", "Motor", "Yamaha"));
         drivers.put(102, new Driver(102, "Andi", 8224455, "andi@gmail.com", "AB123C", "Mobil", "Toyota"));
         
         // Initialize driver statuses
-        driverStatuses.put(101, new DriverStatus(101, true, "Bojoangsoang"));
+        driverStatuses.put(101, new DriverStatus(101, true, "Bojongsoang"));
         driverStatuses.put(102, new DriverStatus(102, false, "Sukabirus"));
     }
     
@@ -126,17 +129,24 @@ public class Main {
         
         Driver availableDriver = drivers.get(availableDriverId);
         
+        // Generate random distance (between 1.0 to 15.0 km)
+        double distance = 1.0 + random.nextDouble() * 14.0;
+        distance = Math.round(distance * 10.0) / 10.0; // Round to 1 decimal
+        
         // Create route and calculate fare
-        Route route = new Route(5.0, 15.0); // Sample distance and duration
+        double duration = (distance / 40) * 60; // Hitung durasi berdasarkan jarak
+        Route route = new Route(distance, duration);
         double fare = route.estimateFare();
         
         // Create order
-        Order order = new Order(orderIdCounter++, userId, availableDriverId, "Menunggu Driver", fare);
+        Order order = new Order(orderIdCounter++, userId, availableDriverId, fare, route);
         orders.put(order.getId(), order);
-        
+        users.get(userId).addOrderToHistory(order);
+
         System.out.println("\nPesanan berhasil dibuat!");
         System.out.println("Driver: " + availableDriver.getName());
         System.out.println("Kendaraan: " + availableDriver.getModel() + " (" + availableDriver.getplateNumber() + ")");
+        System.out.println("Jarak perjalanan: " + distance + " km");
         System.out.println("Perkiraan tarif: Rp" + fare);
         
         // Update driver status
@@ -246,10 +256,10 @@ public class Main {
                 }
             };
             
-            Payment payment = new Payment(paymentMethod.getPaymentId(), paymentMethod, "PAID");
+            Payment payment = new Payment(paymentMethod.getPaymentId());
             payment.makePayment(order.getFare());
             
-            // Generate invoice - menggunakan paymentId yang sudah di-generate
+            // Generate invoice
             int paymentId = (int) (System.currentTimeMillis() % 1000000);
             Invoice invoice = new Invoice(order.getId(), paymentId, 
                                         "Pembayaran untuk order #" + order.getId(), 
@@ -274,7 +284,7 @@ public class Main {
             System.out.print("Masukkan komentar (opsional): ");
             String comment = scanner.nextLine();
             
-            Rating driverRating = new Rating(driverId, true, "");
+            Rating driverRating = new Rating(driverId);
             driverRating.submit(rating, comment);
             
             System.out.println("Terima kasih atas ratingnya!");
@@ -285,24 +295,24 @@ public class Main {
     
     private static void viewOrderHistory(int userId) {
         System.out.println("\n== Riwayat Pesanan ==");
-        boolean found = false;
+        List<Order> userOrders = users.get(userId).getOrderHistory();
         
-        for (Order order : orders.values()) {
-            if (order.getUserId() == userId) {
-                found = true;
-                Driver driver = drivers.get(order.getDriverId());
-                
-                System.out.println("\nID Pesanan: " + order.getId());
-                System.out.println("Driver: " + driver.getName());
-                System.out.println("Kendaraan: " + driver.getModel() + " (" + driver.getplateNumber() + ")");
-                System.out.println("Status: " + order.getStatus());
-                System.out.println("Tarif: Rp" + order.getFare());
-                System.out.println("---------------------");
-            }
+        if (userOrders.isEmpty()) {
+            System.out.println("Belum ada riwayat pesanan.");
+            return;
         }
         
-        if (!found) {
-            System.out.println("Belum ada riwayat pesanan.");
+        for (Order order : userOrders) {
+            Driver driver = drivers.get(order.getDriverId());
+            Route route = order.getRoute();
+            
+            System.out.println("\nID Pesanan: " + order.getId());
+            System.out.println("Driver: " + driver.getName());
+            System.out.println("Kendaraan: " + driver.getModel() + " (" + driver.getplateNumber() + ")");
+            System.out.println("Jarak: " + route.getDistance() + " km");
+            System.out.println("Status: " + order.getStatus());
+            System.out.println("Tarif: Rp" + order.getFare());
+            System.out.println("---------------------");
         }
     }
     
@@ -375,9 +385,11 @@ public class Main {
             if (order.getDriverId() == driverId) {
                 found = true;
                 User user = users.get(order.getUserId());
+                Route route = order.getRoute();
                 
                 System.out.println("\nID Pesanan: " + order.getId());
                 System.out.println("Pelanggan: " + user.getName());
+                System.out.println("Jarak: " + route.getDistance() + " km");
                 System.out.println("Status: " + order.getStatus());
                 System.out.println("Tarif: Rp" + order.getFare());
                 System.out.println("---------------------");
@@ -394,9 +406,7 @@ public class Main {
         String location = scanner.nextLine();
         
         DriverStatus status = driverStatuses.get(driverId);
-        // Update location while preserving availability status
-        driverStatuses.put(driverId, new DriverStatus(driverId, status.isAvailable(), location));
-        
+        status.updateLocation(location);
         System.out.println("Lokasi berhasil diperbarui: " + location);
     }
 }
