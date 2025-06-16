@@ -54,15 +54,12 @@ public class Main {
     }
     
     private static void initializeData() {
-        // Initialize users
         users.put(1, new User(1, "Darla", 8954227, "darla@gmail.com"));
         users.put(2, new User(2, "Budi", 8112233, "budi@gmail.com"));
         
-        // Initialize drivers
         drivers.put(101, new Driver(101, "Rafi", 8113991, "rafi@gmail.com", "ER012D", "Motor", "Yamaha"));
         drivers.put(102, new Driver(102, "Andi", 8224455, "andi@gmail.com", "AB123C", "Mobil", "Toyota"));
         
-        // Initialize driver statuses
         driverStatuses.put(101, new DriverStatus(101, true, "Bojongsoang"));
         driverStatuses.put(102, new DriverStatus(102, false, "Sukabirus"));
     }
@@ -120,7 +117,6 @@ public class Main {
         System.out.print("Masukkan catatan (opsional): ");
         String notes = scanner.nextLine();
         
-        // Find available driver
         Integer availableDriverId = findAvailableDriverId();
         if (availableDriverId == null) {
             System.out.println("Maaf, tidak ada driver yang tersedia saat ini.");
@@ -129,16 +125,13 @@ public class Main {
         
         Driver availableDriver = drivers.get(availableDriverId);
         
-        // Generate random distance (between 1.0 to 15.0 km)
         double distance = 1.0 + random.nextDouble() * 14.0;
-        distance = Math.round(distance * 10.0) / 10.0; // Round to 1 decimal
+        distance = Math.round(distance * 10.0) / 10.0; 
         
-        // Create route and calculate fare
-        double duration = (distance / 40) * 60; // Hitung durasi berdasarkan jarak
+        double duration = (distance / 40) * 60; 
         Route route = new Route(distance, duration);
         double fare = route.estimateFare();
         
-        // Create order
         Order order = new Order(orderIdCounter++, userId, availableDriverId, fare, route);
         orders.put(order.getId(), order);
         users.get(userId).addOrderToHistory(order);
@@ -149,10 +142,8 @@ public class Main {
         System.out.println("Jarak perjalanan: " + distance + " km");
         System.out.println("Perkiraan tarif: Rp" + fare);
         
-        // Update driver status
         driverStatuses.get(availableDriverId).goOffline();
         
-        // Simulate ride process
         processRide(order.getId(), availableDriverId);
     }
     
@@ -181,7 +172,6 @@ public class Main {
                 order.startRide();
                 System.out.println("Perjalanan telah dimulai!");
                 
-                // Simulate ride completion
                 System.out.println("\nPerjalanan sedang berlangsung...");
                 System.out.println("1. Selesaikan Perjalanan");
                 System.out.print("Pilih aksi: ");
@@ -191,13 +181,10 @@ public class Main {
                     order.endRide();
                     System.out.println("Perjalanan telah selesai!");
                     
-                    // Process payment
                     processPayment(order);
                     
-                    // Give rating
                     giveRating(driverId);
                     
-                    // Driver available again
                     driverStatuses.get(driverId).goOnline();
                 }
             } else if (choice == 2) {
@@ -259,7 +246,6 @@ public class Main {
             Payment payment = new Payment(paymentMethod.getPaymentId());
             payment.makePayment(order.getFare());
             
-            // Generate invoice
             int paymentId = (int) (System.currentTimeMillis() % 1000000);
             Invoice invoice = new Invoice(order.getId(), paymentId, 
                                         "Pembayaran untuk order #" + order.getId(), 
@@ -345,7 +331,7 @@ public class Main {
                 switch (choice) {
                     case 1:
                         toggleDriverStatus(driverId);
-                        status = driverStatuses.get(driverId); // Refresh status
+                        status = driverStatuses.get(driverId);
                         System.out.println("Status Anda sekarang: " + (status.isAvailable() ? "Online" : "Offline"));
                         break;
                     case 2:
